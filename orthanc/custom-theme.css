@@ -1,0 +1,112 @@
+/* Nurad theme for Orthanc Explorer 2 - loaded after the built-in dark theme. */
+
+:root {
+    --bs-body-bg: #0A0A0A;
+    --bs-border-radius: 0.5rem;
+
+    --nav-side-bg-color: #0A0A0A;
+    --nav-side-sub-bg-color: #111111;
+    --nav-side-selected-bg-color: #1c1c1c;
+    --nav-side-hover-bg-color: #1c1c1c;
+    --nav-side-active-border-color: #d4a24c;
+
+    --study-even-bg-color: #141414;
+    --study-odd-bg-color: #101010;
+    --study-hover-color: #1c1c1c;
+    --study-selected-color: #1c1c1c;
+
+    --series-even-bg-color: #141414;
+    --series-odd-bg-color: #101010;
+
+    --instance-even-bg-color: #141414;
+    --instance-odd-bg-color: #101010;
+
+    --study-table-header-bg-color: #141414;
+    --study-table-filter-bg-color: #141414;
+    --study-table-actions-bg-color: #141414;
+
+    --bs-border-color: #262626;
+    --table-filters-is-not-searching-color: #d4a24c;
+}
+
+body,
+.nav-side-menu {
+    background-color: #0A0A0A;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Sidebar branding */
+.custom-logo {
+    display: block;
+    margin: 1.5rem auto 0.75rem auto;
+    max-width: 64%;
+}
+
+.powered-by-orthanc {
+    text-align: center;
+    opacity: 0.6;
+}
+
+.orthanc-name {
+    text-align: center;
+    border-bottom: none !important;
+    margin-bottom: 1.25rem !important;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #1c1c1c !important;
+}
+
+.orthanc-name p {
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em;
+    color: #f2f2f2 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Menu items */
+.nav-side-menu {
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.nav-side-menu li {
+    border-radius: 0 6px 6px 0;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-side-menu ul .sub-menu li {
+    border-radius: 0 6px 6px 0;
+}
+
+/* Top filter/action bar and table */
+.study-table-filter,
+.study-table-actions,
+table {
+    border-radius: var(--bs-border-radius);
+}
+
+.btn {
+    border-radius: 6px;
+}
+
+.btn-primary {
+    --bs-btn-bg: #d4a24c;
+    --bs-btn-border-color: #d4a24c;
+    --bs-btn-hover-bg: #c4923c;
+    --bs-btn-hover-border-color: #c4923c;
+    --bs-btn-color: #0A0A0A;
+    --bs-btn-hover-color: #0A0A0A;
+}
+
+input.form-control,
+select.form-select {
+    background-color: #141414;
+    border-color: #262626;
+    color: #f2f2f2;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+    border-color: #d4a24c;
+    box-shadow: 0 0 0 0.2rem rgba(212, 162, 76, 0.25);
+}

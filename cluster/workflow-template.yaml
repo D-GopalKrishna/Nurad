@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: monai-spleen-segmentation
+  namespace: argo
+spec:
+  entrypoint: segment
+  arguments:
+    parameters:
+      - name: study-instance-uid
+      - name: series-instance-uid
+  templates:
+    - name: segment
+      inputs:
+        parameters:
+          - name: study-instance-uid
+          - name: series-instance-uid
+      container:
+        image: monai-pipeline:latest
+        imagePullPolicy: IfNotPresent
+        # Argo's executor otherwise tries to look up the image's entrypoint
+        # via a registry API call, which fails for a local-only image.
+        command: ["python", "segment.py"]
+        args:
+          - --study-uid
+          - "{{inputs.parameters.study-instance-uid}}"
+          - --series-uid
+          - "{{inputs.parameters.series-instance-uid}}"
+        env:
+          - name: ORTHANC_URL
+            value: http://host.docker.internal:8042
+          - name: ORTHANC_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: orthanc-creds
+                key: username
+          - name: ORTHANC_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: orthanc-creds
+                key: password
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: "1"
+          limits:
+            memory: 4Gi
+            cpu: "2"

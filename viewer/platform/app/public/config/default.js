@@ -3,7 +3,24 @@
 window.config = {
   name: 'config/default.js',
   routerBasename: null,
-  // whiteLabeling: {},
+  whiteLabeling: {
+    createLogoComponentFn: function (React) {
+      return React.createElement(
+        'a',
+        {
+          target: '_self',
+          rel: 'noopener noreferrer',
+          className: 'flex items-center gap-2',
+          href: '/',
+        },
+        React.createElement('img', {
+          src: '/nurad-logo.png',
+          className: 'h-[28px] w-[28px]',
+        }),
+        React.createElement('span', { className: 'text-lg font-bold text-white' }, 'Nurad')
+      );
+    },
+  },
   extensions: [],
   modes: [],
   // Disables OHIF's built-in onboarding walkthrough: its Shepherd.js tour

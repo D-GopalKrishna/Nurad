@@ -1,0 +1,14 @@
+/* Nurad branding: replace OHIF's default navy-blue panels with a neutral
+   near-black palette matching the rest of the platform (Orthanc, the React
+   worklist). The bundler injects app.bundle.css's own :root declarations
+   *after* this file (regardless of where this <link> is placed in the HTML
+   template), so !important is needed to actually win the cascade. */
+:root,
+.dark {
+  --background: 0 0% 4% !important; /* ~#0A0A0A */
+  --card: 0 0% 6% !important;
+  --popover: 0 0% 6% !important;
+  --muted: 0 0% 9% !important;
+  --accent: 0 0% 12% !important;
+  --border: 0 0% 16% !important;
+}

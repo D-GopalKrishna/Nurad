@@ -1,5 +1,5 @@
 {
-  "Name": "DicomOrthanc",
+  "Name": "Nurad",
   "StorageDirectory": "/var/lib/orthanc/db",
   "IndexDirectory": "/var/lib/orthanc/db",
 
@@ -18,6 +18,12 @@
     "Root": "/dicom-web/",
     "EnableWado": true,
     "WadoRoot": "/wado"
+  },
+
+  "OrthancExplorer2": {
+    "Theme": "dark",
+    "CustomCssPath": "/etc/orthanc/custom-theme.css",
+    "CustomLogoPath": "/etc/orthanc/logo.png"
   },
 
   "Plugins": ["/usr/local/share/orthanc/plugins"]

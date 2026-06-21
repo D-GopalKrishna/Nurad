@@ -42,3 +42,13 @@ export async function fetchWorklist() {
   const { data } = await api.get('/api/worklist/');
   return data;
 }
+
+export async function runSegmentation(studyId) {
+  const { data } = await api.post(`/api/studies/${studyId}/run-segmentation/`);
+  return data;
+}
+
+export async function getSegmentationJobStatus(jobId) {
+  const { data } = await api.get(`/api/segmentation-jobs/${jobId}/`);
+  return data;
+}

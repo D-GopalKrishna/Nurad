@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -8,9 +9,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from . import orthanc_client
-from .models import Study
-from .serializers import StudySerializer
+from . import argo_client, orthanc_client
+from .models import SegmentationJob, Study
+from .serializers import SegmentationJobSerializer, StudySerializer
 
 
 class WorklistView(APIView):
@@ -26,6 +27,40 @@ class WorklistView(APIView):
             studies = Study.objects.filter(allowed_users=user)
 
         return Response(StudySerializer(studies, many=True).data)
+
+
+class RunSegmentationView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, study_id):
+        study = get_object_or_404(Study, id=study_id)
+
+        series_instance_uid = orthanc_client.find_ct_series_instance_uid(
+            study.study_instance_uid
+        )
+        if not series_instance_uid:
+            return Response({'detail': 'No CT series found for this study'}, status=400)
+
+        workflow_name = argo_client.submit_segmentation_workflow(
+            study.study_instance_uid, series_instance_uid
+        )
+        job = SegmentationJob.objects.create(
+            study=study,
+            series_instance_uid=series_instance_uid,
+            workflow_name=workflow_name,
+            status='Pending',
+        )
+        return Response(SegmentationJobSerializer(job).data, status=201)
+
+
+class SegmentationJobStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, job_id):
+        job = get_object_or_404(SegmentationJob, id=job_id)
+        job.status = argo_client.get_workflow_status(job.workflow_name)
+        job.save(update_fields=['status', 'updated_at'])
+        return Response(SegmentationJobSerializer(job).data)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

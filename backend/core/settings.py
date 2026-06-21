@@ -77,6 +77,11 @@ ORTHANC_URL = os.environ.get('ORTHANC_URL', 'http://localhost:8042')
 ORTHANC_USERNAME = os.environ.get('ORTHANC_USERNAME', 'orthanc')
 ORTHANC_PASSWORD = os.environ.get('ORTHANC_PASSWORD', 'orthanc')
 
+# Kubernetes API server (MONAI segmentation pipeline, via Argo Workflows
+# custom resources) - see cluster/README.md
+ARGO_SERVER_URL = os.environ.get('ARGO_SERVER_URL', 'https://kubernetes.docker.internal:6443')
+ARGO_TOKEN = os.environ.get('ARGO_TOKEN', '')
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [

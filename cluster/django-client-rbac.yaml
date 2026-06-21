@@ -1,0 +1,33 @@
+# Grants the 'default' ServiceAccount in the argo namespace just enough
+# permission for Django to submit segmentation runs and poll their status.
+#
+# Django talks directly to the Kubernetes API server's CRD endpoints for
+# Workflow objects (via workflowTemplateRef), not to Argo Server's own REST
+# API - on Docker Desktop's Kubernetes, LoadBalancer/NodePort services (and
+# even the apiserver's services/proxy and pods/proxy subresources) aren't
+# reachable from other Docker containers, only from the Windows host itself.
+# Plain CRD create/get against the API server works fine since it only needs
+# etcd access, not a route to the pod's IP.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: django-workflow-submitter
+  namespace: argo
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows"]
+    verbs: ["create", "get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: django-workflow-submitter-default
+  namespace: argo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: django-workflow-submitter
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: argo

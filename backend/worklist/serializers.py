@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Study
+from .models import SegmentationJob, Study
 
 
 class StudySerializer(serializers.ModelSerializer):
@@ -15,3 +15,9 @@ class StudySerializer(serializers.ModelSerializer):
             'study_description',
             'modalities',
         ]
+
+
+class SegmentationJobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SegmentationJob
+        fields = ['id', 'study', 'series_instance_uid', 'workflow_name', 'status', 'created_at']

@@ -22,7 +22,7 @@ export default function Login() {
   return (
     <div className="login-page">
       <form onSubmit={handleSubmit}>
-        <h1>Sign in</h1>
+        <h1>Nurad</h1>
         <input
           placeholder="Username"
           value={username}

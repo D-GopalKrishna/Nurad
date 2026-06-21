@@ -17,6 +17,8 @@ services:
       ORTHANC_PASSWORD: ${ORTHANC_PASSWORD}
     volumes:
       - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json.template:ro
+      - ./orthanc/custom-theme.css:/etc/orthanc/custom-theme.css:ro
+      - ./orthanc/logo.png:/etc/orthanc/logo.png:ro
       - orthanc_db:/var/lib/orthanc/db
     entrypoint:
       - /bin/bash

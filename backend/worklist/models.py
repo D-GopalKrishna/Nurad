@@ -17,3 +17,25 @@ class Study(models.Model):
 
     def __str__(self):
         return f'{self.study_instance_uid} ({self.patient_name})'
+
+
+class SegmentationJob(models.Model):
+    """Tracks a MONAI spleen-segmentation Argo Workflow run for a study."""
+
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Running', 'Running'),
+        ('Succeeded', 'Succeeded'),
+        ('Failed', 'Failed'),
+        ('Error', 'Error'),
+    ]
+
+    study = models.ForeignKey(Study, on_delete=models.CASCADE, related_name='segmentation_jobs')
+    series_instance_uid = models.CharField(max_length=128)
+    workflow_name = models.CharField(max_length=255, unique=True)
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.workflow_name} ({self.status})'

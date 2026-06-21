@@ -40,6 +40,29 @@ def sync_studies_from_orthanc():
         )
 
 
+def find_ct_series_instance_uid(study_instance_uid):
+    """Resolve a study's first CT series, for use as the segmentation input."""
+    lookup = requests.post(
+        f'{settings.ORTHANC_URL}/tools/lookup',
+        data=study_instance_uid,
+        auth=_auth(),
+        timeout=10,
+    ).json()
+    study_matches = [m for m in lookup if m['Type'] == 'Study']
+    if not study_matches:
+        return None
+    study_id = study_matches[0]['ID']
+
+    series = requests.get(
+        f'{settings.ORTHANC_URL}/studies/{study_id}/series', auth=_auth(), timeout=10
+    ).json()
+    for s in series:
+        tags = s.get('MainDicomTags', {})
+        if tags.get('Modality') == 'CT':
+            return tags.get('SeriesInstanceUID')
+    return None
+
+
 def proxy_request(method, subpath, query_string=b'', body=b'', headers=None):
     """Forward a DICOMweb request to Orthanc with server-side basic auth."""
     url = f'{settings.ORTHANC_URL}/dicom-web/{subpath}'

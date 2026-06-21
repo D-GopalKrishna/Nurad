@@ -13,9 +13,32 @@
 }
 
 .worklist-page {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 40px auto;
   padding: 0 16px;
+}
+
+.job-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.job-status-pending,
+.job-status-running {
+  background: #2d3a52;
+  color: #8ab4f8;
+}
+
+.job-status-succeeded {
+  background: #1e3a2a;
+  color: #6cce8e;
+}
+
+.job-status-failed,
+.job-status-error {
+  background: #3a1e1e;
+  color: #e05252;
 }
 
 .worklist-page header {
