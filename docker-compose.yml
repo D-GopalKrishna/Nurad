@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  orthanc:
+    image: jodogne/orthanc-plugins:1.12.3
+    restart: unless-stopped
+    environment:
+      ORTHANC_USERNAME: ${ORTHANC_USERNAME}
+      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD}
+    volumes:
+      - ./orthanc/orthanc.json:/etc/orthanc/orthanc.json.template:ro
+      - orthanc_db:/var/lib/orthanc/db
+    entrypoint:
+      - /bin/bash
+      - -c
+      - >
+        sed -e "s/\${ORTHANC_USERNAME}/$$ORTHANC_USERNAME/" -e "s/\${ORTHANC_PASSWORD}/$$ORTHANC_PASSWORD/"
+        /etc/orthanc/orthanc.json.template > /etc/orthanc/orthanc.json &&
+        Orthanc /etc/orthanc
+    ports:
+      - "8042:8042"
+    # DICOM port 4242 intentionally not published - only HTTP/DICOMweb needed by Django
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      ORTHANC_URL: http://orthanc:8042
+      ORTHANC_USERNAME: ${ORTHANC_USERNAME}
+      ORTHANC_PASSWORD: ${ORTHANC_PASSWORD}
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - orthanc
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+      VITE_OHIF_BASE_URL: ${VITE_OHIF_BASE_URL}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    command: npm run dev -- --host 0.0.0.0
+
+  viewer:
+    build:
+      context: ./viewer
+      args:
+        APP_CONFIG: config/default.js
+    restart: unless-stopped
+    ports:
+      - "3030:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  orthanc_db:

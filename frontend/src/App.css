@@ -1,0 +1,47 @@
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.login-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 280px;
+}
+
+.worklist-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.worklist-page header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.worklist-page header > div {
+  display: flex;
+  gap: 8px;
+}
+
+.worklist-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.worklist-page th,
+.worklist-page td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #444;
+}
+
+.error {
+  color: #e05252;
+}
