@@ -9,3 +9,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Claude Code local state
+.claude/
