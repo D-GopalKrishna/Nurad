@@ -34,6 +34,7 @@ import { AppConfigProvider } from '@state';
 import createRoutes from './routes';
 import appInit from './appInit.js';
 import OpenIdConnectRoutes from './utils/OpenIdConnectRoutes';
+import NuradAuthRoutes from './routes/NuradAuthRoutes';
 import { ShepherdJourneyProvider } from 'react-shepherd';
 import './App.css';
 
@@ -157,7 +158,10 @@ function App({
     showStudyList,
   });
 
-  if (oidc) {
+  // `oidc` defaults to [] (see appConfigState above), which is truthy - a
+  // plain `if (oidc)` check always takes this branch even with no OIDC
+  // client configured, so NuradAuthRoutes below would never run.
+  if (oidc && oidc.length > 0) {
     authRoutes = (
       <OpenIdConnectRoutes
         oidc={oidc}
@@ -165,6 +169,11 @@ function App({
         userAuthenticationService={userAuthenticationService}
       />
     );
+  } else {
+    // No OIDC configured - gate the app with Nurad's own username/password
+    // login instead (backed by the Django JWT endpoint). See
+    // .vscode/plan/03-ohif-native-login.md.
+    authRoutes = <NuradAuthRoutes userAuthenticationService={userAuthenticationService} />;
   }
 
   return (
