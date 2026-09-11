@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from . import argo_client, orthanc_client
-from .models import SegmentationJob, Study
-from .serializers import SegmentationJobSerializer, StudySerializer
+from .models import SegmentationJob, SegmentationReview, Study
+from .serializers import SegmentationJobSerializer, SegmentationReviewSerializer, StudySerializer
 
 
 class WorklistView(APIView):
@@ -61,6 +61,22 @@ class SegmentationJobStatusView(APIView):
         job.status = argo_client.get_workflow_status(job.workflow_name)
         job.save(update_fields=['status', 'updated_at'])
         return Response(SegmentationJobSerializer(job).data)
+
+
+class SegmentationReviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, job_id):
+        job = get_object_or_404(SegmentationJob, id=job_id)
+        reviews = job.reviews.all()
+        return Response(SegmentationReviewSerializer(reviews, many=True).data)
+
+    def post(self, request, job_id):
+        job = get_object_or_404(SegmentationJob, id=job_id)
+        serializer = SegmentationReviewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(job=job, reviewer=request.user)
+        return Response(serializer.data, status=201)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
