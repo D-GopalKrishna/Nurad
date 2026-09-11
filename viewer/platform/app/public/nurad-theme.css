@@ -11,4 +11,16 @@
   --muted: 0 0% 9% !important;
   --accent: 0 0% 12% !important;
   --border: 0 0% 16% !important;
+  /* Fills in the neutral tokens this palette was missing (text/inputs/focus
+     ring) so they match the near-black scheme above instead of falling back
+     to OHIF's defaults. Left --primary/--accent-foreground alone - OHIF's
+     stock blue - since picking an actual brand accent color is a real
+     design decision, not a gap-fill; flagged for a follow-up pass rather
+     than guessed here. See .vscode/plan/02-dashboard-ingestion.md. */
+  --foreground: 0 0% 96% !important;
+  --card-foreground: 0 0% 96% !important;
+  --popover-foreground: 0 0% 96% !important;
+  --muted-foreground: 0 0% 64% !important;
+  --input: 0 0% 14% !important;
+  --ring: 0 0% 40% !important;
 }

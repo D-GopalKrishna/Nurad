@@ -130,6 +130,7 @@ export default function WorkList({
                 dataSource={dataSource}
                 selected={selected}
                 servicesManager={servicesManager}
+                onRefresh={onRefresh}
               />
             </StudyList.Preview>
           </StudyList>
